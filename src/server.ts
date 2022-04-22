@@ -1,20 +1,13 @@
-import bodyParser from 'body-parser';
-import express from 'express';
+import app from './app';
 
-import { Router, Request, Response } from 'express';
+const port = process.env.PORT || 3333;
 
-const app = express();
+// route.get('/', (req: Request, res: Response) => {
+// 	res.json({ message: 'hello world with Typescript' });
+// });
 
-const route = Router();
+// app.use(route);
 
-const port = process.env.PORT || 3000;
-
-app.use(bodyParser.json());
-
-route.get('/', (req: Request, res: Response) => {
-	res.json({ message: 'hello world with Typescript' });
+app.listen(port, () => {
+	console.log('Server listening on port', port);
 });
-
-app.use(route);
-
-app.listen(port, () => 'server running on port 3333');
