@@ -21,7 +21,7 @@ class UserController {
 			} else {
 				res.status(200).send(users);
 			}
-		});
+		}).populate('profiles.image');
 	};
 
 	static registerUser = (req: Request, res: Response) => {
@@ -64,21 +64,27 @@ class UserController {
 	};
 
 	static updateUser = (req: Request, res: Response) => {
-		const id = req.params.id;
+		try {
+			const id = req.params.id;
 
-		user.findByIdAndUpdate(
-			id,
-			{ $set: req.body },
-			(err: mongoose.CallbackError) => {
-				if (!err) {
-					res.status(200).send({
-						message: 'User updated.',
-					});
-				} else {
-					res.status(500).send({ message: err.message });
+			user.findByIdAndUpdate(
+				id,
+				{ $set: req.body },
+				(err: mongoose.CallbackError) => {
+					if (!err) {
+						res.status(200).send({
+							message: 'User updated.',
+						});
+					} else {
+						res.status(500).send({ message: err.message });
+					}
 				}
+			);
+		} catch (error) {
+			if (error instanceof Error) {
+				res.status(500).send({ message: error.message });
 			}
-		);
+		}
 	};
 
 	static deleteUser = (req: Request, res: Response) => {
