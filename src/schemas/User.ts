@@ -2,6 +2,14 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 type User = Document & {};
 
+export interface IUser extends Document {
+	name: string;
+	email: string;
+	passwordHash: string;
+	verifiedEmail: boolean;
+	profiles: { name: string; image: number }[];
+}
+
 const UserSchema = new Schema(
 	{
 		name: { type: String, required: true },
@@ -20,4 +28,4 @@ const UserSchema = new Schema(
 	}
 );
 
-export default mongoose.model<User>('users', UserSchema);
+export default mongoose.model<IUser>('users', UserSchema);

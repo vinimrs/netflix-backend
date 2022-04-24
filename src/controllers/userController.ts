@@ -1,8 +1,60 @@
-import user from '../schemas/User';
+import user, { IUser } from '../schemas/User';
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
+import errors from '../errors';
+import bcrypt from 'bcrypt';
+
+import tokens from '../auth/tokens';
+import Email from '../auth/email';
+import { verificaUsuario } from 'auth/authStrategies';
+
+interface CustomReq extends Request {
+	user?: IUser;
+	token?: string;
+}
+
+function generateAddress(route: string, token: string) {
+	const baseUrl = process.env.BASE_URL;
+	return `${baseUrl}${route}${token}`;
+}
 
 class UserController {
+	static login = async (req: CustomReq, res: Response) => {
+		try {
+			console.log(req.user!.id);
+			const accessToken = tokens.access.cria(req.user!.id);
+			const refreshToken = await tokens.refresh.cria(req.user!.id);
+			res.set('Authorization', accessToken);
+			res.status(200).json({ refreshToken });
+		} catch (error) {
+			if (error instanceof Error)
+				res.status(500).json({ error: error.message });
+		}
+	};
+
+	static logout = async (req: CustomReq, res: Response) => {
+		try {
+			tokens.access.invalida(req.token);
+			res.status(204).json();
+		} catch (error) {
+			if (error instanceof Error)
+				res.status(500).json({ error: error.message });
+		}
+	};
+
+	static verifyEmail = async (req: CustomReq, res: Response) => {
+		try {
+			const usuario = req.user; // para não usar uma query podemos fazer parecido com as outras rotas: usar um middleware
+			await user.findByIdAndUpdate(usuario?.id, {
+				$set: { verifiedEmail: true },
+			});
+			res.status(200).json({ message: 'E-mail verificado com sucesso!' });
+		} catch (error) {
+			if (error instanceof Error)
+				res.status(500).json({ error: error.message });
+		}
+	};
+
 	static listUsers = (req: Request, res: Response) => {
 		user.find()
 			.populate('profiles.image')
@@ -24,25 +76,38 @@ class UserController {
 		}).populate('profiles.image');
 	};
 
-	static registerUser = (req: Request, res: Response) => {
+	static registerUser = async (req: Request, res: Response) => {
 		const { name, email, password } = req.body;
 
-		const newUser = new user({
-			name,
-			email,
-			passwordHash: password,
-			verifiedEmail: false,
-		});
+		try {
+			const hash = await this.generatePasswordHash(password);
+			console.log(hash);
 
-		newUser.save(err => {
-			if (err) {
-				res.status(500).send({
-					message: `${err.message} - error in user register.`,
-				});
-			} else {
-				res.status(201).send(newUser.toJSON());
+			const newUser = new user({
+				name,
+				email,
+				passwordHash: hash,
+				verifiedEmail: false,
+			});
+
+			newUser.save();
+
+			const token = tokens.verificacaoEmail.cria(newUser.id);
+			const endereco = generateAddress('/user/verify-email/', token);
+			const emailVerificacao = new Email.EmailVerificacao(
+				newUser,
+				endereco
+			);
+			emailVerificacao.enviaEmail().catch(console.log);
+			res.status(201).json();
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error instanceof errors.InvalidArgumentError) {
+					return res.status(400).json({ erro: error.message });
+				}
+				res.status(500).json({ erro: error.message });
 			}
-		});
+		}
 	};
 
 	static registerUserProfile = (req: Request, res: Response) => {
@@ -69,7 +134,7 @@ class UserController {
 
 			user.findByIdAndUpdate(
 				id,
-				{ $set: req.body },
+				{ $set: { name: req.body.name } },
 				(err: mongoose.CallbackError) => {
 					if (!err) {
 						res.status(200).send({
@@ -97,6 +162,32 @@ class UserController {
 				res.status(500).send({ message: err.message });
 			}
 		});
+	};
+
+	static getSession = async (req: CustomReq, res: Response) => {
+		res.status(200).json({
+			data: {
+				user: {
+					username: req.user?.name,
+					email: req.user?.email,
+				},
+				id: req.user?.id,
+				verifiedEmail: req.user?.verifiedEmail,
+				profiles: req.user?.profiles
+					? req.user?.profiles.map(profile => {
+							return {
+								name: profile.name,
+								image_id: profile.image,
+							};
+					  })
+					: [],
+			},
+		});
+	};
+
+	static generatePasswordHash = async (senha: string) => {
+		const hashCosts = 12;
+		return await bcrypt.hash(senha, hashCosts);
 	};
 }
 

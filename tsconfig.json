@@ -15,8 +15,8 @@
 		"forceConsistentCasingInFileNames": true,
 		"noImplicitAny": true,
 		"paths": {
-			// "@services/*": [*./services]
+			// "@redis/*": [.*/redis]
 		}
 	},
-	"include": ["src"]
+	"include": ["src", "index.d.ts"]
 }
