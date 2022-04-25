@@ -1,17 +1,23 @@
 import express from 'express';
 import UserController from '../controllers/userController';
 import middlewares from '../auth/middlewares';
+import cors from 'cors';
 
 const router = express.Router();
 
 router
-	.post('/user/update-token', middlewares.refresh, UserController.login)
+	.post('/user/refresh', middlewares.refresh, UserController.login)
 	.get(
 		'/user/verify-email/:token',
 		middlewares.verificacaoEmail,
 		UserController.verifyEmail
 	)
-	.post('/user/login', middlewares.local, UserController.login)
+	.post(
+		'/user/login',
+		cors({ exposedHeaders: ['Authorization'] }),
+		middlewares.local,
+		UserController.login
+	)
 	.post(
 		'/user/logout',
 		[middlewares.refresh, middlewares.bearer],

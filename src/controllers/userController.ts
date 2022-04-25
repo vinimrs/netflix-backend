@@ -23,9 +23,9 @@ class UserController {
 		try {
 			console.log(req.user!.id);
 			const accessToken = tokens.access.cria(req.user!.id);
-			const refreshToken = await tokens.refresh.cria(req.user!.id);
+			const refresh_token = await tokens.refresh.cria(req.user!.id);
 			res.set('Authorization', accessToken);
-			res.status(200).json({ refreshToken });
+			res.status(200).json({ refresh_token });
 		} catch (error) {
 			if (error instanceof Error)
 				res.status(500).json({ error: error.message });
