@@ -41,8 +41,10 @@ export default {
 						const usuario = await Usuario.findOne({
 							email: email,
 						});
-						console.log(usuario);
+						// console.log(usuario);
 						if (usuario !== null) {
+							if (!usuario.verifiedEmail)
+								throw new Error('E-mail não verificado');
 							verificaUsuario(usuario);
 							await verificaSenha(password, usuario.passwordHash);
 						}

@@ -19,6 +19,7 @@ const UserSchema = new Schema(
 		profiles: [
 			{
 				name: { type: String, required: true },
+				preference: { type: String, required: true },
 				image: { type: Schema.Types.ObjectId, ref: 'images' },
 			},
 		],

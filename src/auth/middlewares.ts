@@ -27,15 +27,22 @@ export default {
 			{ session: false },
 			(erro, usuario, info) => {
 				if (erro && erro.name === 'InvalidArgumentError') {
-					return res.status(401).json({ erro: erro.message });
+					return res.status(401).json({ error: erro.message });
+				}
+
+				if (
+					erro &&
+					erro.message === 'E-mail do usuário não verificado'
+				) {
+					return res.status(401).json({ error: erro.message });
 				}
 
 				if (erro) {
-					return res.status(500).json({ erro: erro.message });
+					return res.status(500).json({ error: erro.message });
 				}
 
 				if (!usuario) {
-					return res.status(401).json();
+					return res.status(401).json({ error: 'Usuário inválido' });
 				}
 
 				req.user = usuario;
@@ -50,22 +57,24 @@ export default {
 			{ session: false },
 			(erro, usuario, info) => {
 				if (erro && erro.name === 'JsonWebTokenError') {
-					return res.status(401).json({ erro: erro.message });
+					return res.status(401).json({ error: erro.message });
 				}
 
 				if (erro && erro.name === 'TokenExpiredError') {
 					return res.status(401).json({
-						erro: erro.message,
-						expiradoEm: erro.expiredAt,
+						error: erro.message,
+						expiredAt: erro.expiredAt,
 					});
 				}
 
 				if (erro) {
-					return res.status(500).json({ erro: erro.message });
+					return res.status(500).json({ error: erro.message });
 				}
 
 				if (!usuario) {
-					return res.status(401).json();
+					return res
+						.status(401)
+						.json({ error: 'Token de usuário inválido' });
 				}
 
 				req.token = info;
@@ -81,7 +90,7 @@ export default {
 	) {
 		try {
 			const { refresh_token } = req.body; // Usuário enviará o token no corpo da requisição
-			console.log(refresh_token);
+			console.log('bearer', refresh_token);
 			const id = await tokens.refresh.verifica(refresh_token);
 			await tokens.refresh.invalida(refresh_token);
 			const user = await Usuario.findById(id);

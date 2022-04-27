@@ -21,7 +21,6 @@ function generateAddress(route: string, token: string) {
 class UserController {
 	static login = async (req: CustomReq, res: Response) => {
 		try {
-			console.log(req.user!.id);
 			const accessToken = tokens.access.cria(req.user!.id);
 			const refresh_token = await tokens.refresh.cria(req.user!.id);
 			res.set('Authorization', accessToken);
@@ -81,7 +80,9 @@ class UserController {
 
 		try {
 			const hash = await this.generatePasswordHash(password);
-			console.log(hash);
+
+			const usuar = await user.findOne({ email });
+			if (usuar) throw new Error('E-mail já cadastrado');
 
 			const newUser = new user({
 				name,
@@ -99,13 +100,13 @@ class UserController {
 				endereco
 			);
 			emailVerificacao.enviaEmail().catch(console.log);
-			res.status(201).json();
+			res.status(201).json({ message: 'User created' });
 		} catch (error) {
 			if (error instanceof Error) {
 				if (error instanceof errors.InvalidArgumentError) {
-					return res.status(400).json({ erro: error.message });
+					return res.status(400).json({ error: error.message });
 				}
-				res.status(500).json({ erro: error.message });
+				res.status(500).json({ error: error.message });
 			}
 		}
 	};
