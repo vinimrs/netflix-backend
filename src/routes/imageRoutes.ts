@@ -19,6 +19,7 @@ const upload = multer({ storage: storage });
 router
 	.get('/image-ui', ImageController.getUIImages)
 	.get('/image', ImageController.listImages)
+	.get('/image/id', ImageController.listImagesId)
 	.post('/image-ui', upload.single('image'), ImageController.registerImage);
 
 export default router;

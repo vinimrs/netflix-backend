@@ -33,6 +33,16 @@ router
 		middlewares.bearer,
 		UserController.registerUserProfile
 	)
+	.delete(
+		'/user-profile/:id',
+		middlewares.bearer,
+		UserController.deleteUserProfile
+	)
+	.put(
+		'/user-profile/:id',
+		middlewares.bearer,
+		UserController.updateUserProfile
+	)
 	.get('/session', middlewares.bearer, UserController.getSession);
 
 export default router;

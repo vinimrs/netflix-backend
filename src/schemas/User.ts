@@ -7,7 +7,12 @@ export interface IUser extends Document {
 	email: string;
 	passwordHash: string;
 	verifiedEmail: boolean;
-	profiles: { name: string; image: number }[];
+	profiles: {
+		name: string;
+		image: number;
+		slug: string;
+		preference: string;
+	}[];
 }
 
 const UserSchema = new Schema(
@@ -18,6 +23,8 @@ const UserSchema = new Schema(
 		verifiedEmail: { type: Boolean },
 		profiles: [
 			{
+				_id: { type: Schema.Types.ObjectId },
+				slug: { type: String, required: true },
 				name: { type: String, required: true },
 				preference: { type: String, required: true },
 				image: { type: Schema.Types.ObjectId, ref: 'images' },

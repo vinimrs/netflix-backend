@@ -104,7 +104,7 @@ export default {
 				if (error.name == 'InvalidArgumentError') {
 					return res.status(401).json({ message: error.message });
 				}
-				return res.status(500).json({ erro: error.message });
+				return res.status(500).json({ error: error.message });
 			}
 		}
 	},

@@ -111,24 +111,6 @@ class UserController {
 		}
 	};
 
-	static registerUserProfile = (req: Request, res: Response) => {
-		const id = req.params.id;
-		const { name, image_id } = req.body;
-
-		user.findByIdAndUpdate(
-			id,
-			{ $push: { profiles: { name: name, image: image_id } } },
-			err => {
-				if (err) {
-					console.log(err?.message);
-					res.status(400).send({ message: 'Id não encontrado!' });
-				} else {
-					res.status(201).send({ message: 'Profile add.' });
-				}
-			}
-		);
-	};
-
 	static updateUser = (req: Request, res: Response) => {
 		try {
 			const id = req.params.id;
@@ -178,12 +160,98 @@ class UserController {
 					? req.user?.profiles.map(profile => {
 							return {
 								name: profile.name,
-								image_id: profile.image,
+								image: profile.image,
+								slug: profile.slug,
+								preference: profile.preference,
 							};
 					  })
 					: [],
 			},
 		});
+	};
+
+	static registerUserProfile = (req: Request, res: Response) => {
+		const id = req.params.id;
+		const { name, image_id, slug, preference } = req.body;
+
+		user.findByIdAndUpdate(
+			id,
+			{
+				$push: {
+					profiles: { name: name, image: image_id, slug, preference },
+				},
+			},
+			err => {
+				if (err) {
+					console.log(err?.message);
+					res.status(400).send({ message: 'Id não encontrado!' });
+				} else {
+					res.status(201).send({ message: 'Perfil adicionado' });
+				}
+			}
+		);
+	};
+
+	static deleteUserProfile = (req: Request, res: Response) => {
+		const id = req.params.id;
+		const { slug } = req.body;
+
+		user.findByIdAndUpdate(
+			id,
+			{
+				$pull: {
+					profiles: { slug: slug },
+				},
+			},
+			error => {
+				if (error instanceof Error) {
+					if (error) {
+						console.log(error?.message);
+						res.status(400).send({
+							message: 'Id não encontrado!',
+						});
+					}
+				}
+				res.status(200).send({ message: 'Perfil removido' });
+			}
+		);
+	};
+
+	static updateUserProfile = (req: Request, res: Response) => {
+		const id = req.params.id;
+		const { image, slug, name, preference } = req.body;
+
+		try {
+			user.findOneAndUpdate(
+				{ _id: id, 'profiles.image': image },
+				{
+					$set: {
+						'profiles.$.slug': slug,
+						'profiles.$.name': name,
+						'profiles.$.preference': preference,
+					},
+				},
+				(error: mongoose.CallbackError) => {
+					if (error instanceof Error) {
+						if (error) {
+							console.log(error?.message);
+							res.status(400).send({
+								message: 'Id não encontrado!',
+							});
+						}
+					}
+					res.status(200).send({ message: 'Perfil atualizado' });
+				}
+			);
+		} catch (error) {
+			if (error instanceof Error) {
+				if (error) {
+					console.log(error?.message);
+					res.status(400).send({ message: 'Id não encontrado!' });
+				}
+			}
+			res.status(200).send({ message: 'Profile removed.' });
+		}
 	};
 
 	static generatePasswordHash = async (senha: string) => {
