@@ -23,7 +23,7 @@ class MoviesController {
 			res.status(200).send(resp.results);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -39,7 +39,7 @@ class MoviesController {
 			res.status(200).send(resp.results);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -53,7 +53,7 @@ class MoviesController {
 			res.status(200).send(resp.results);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -70,7 +70,7 @@ class MoviesController {
 			res.status(200).send(resp);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -87,7 +87,7 @@ class MoviesController {
 			res.status(200).send(resp.results);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -101,7 +101,7 @@ class MoviesController {
 			res.status(200).send(resp);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
@@ -117,7 +117,7 @@ class MoviesController {
 			res.status(200).send(resp);
 		} catch (error) {
 			if (error instanceof Error) {
-				res.status(500).send({ error: error.message });
+				res.status(500).send({ error: error });
 			}
 		}
 	};
