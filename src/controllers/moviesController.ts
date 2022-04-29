@@ -46,16 +46,11 @@ class MoviesController {
 
 	static getTopRateds = async (req: Request, res: Response) => {
 		try {
-			const resp = await fetch(
-				`${process.env.MOVIEDB_BASE_URL}/movie/top_rated?language=pt-BR&api_key=${process.env.MOVIEDB_API_KEY}`
-			);
-			// const resp = await moviedb.movieTopRated({
-			// 	language: 'pt-BR',
-			// });
-			const conv = await resp.json();
-			console.log(conv);
+			const resp = await moviedb.movieTopRated({
+				language: 'pt-BR',
+			});
 
-			res.status(200).send(conv);
+			res.status(200).send(resp.results);
 		} catch (error) {
 			if (error instanceof Error) {
 				res.status(500).send({ error: error });
