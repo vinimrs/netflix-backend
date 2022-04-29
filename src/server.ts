@@ -8,6 +8,6 @@ const port = process.env.PORT || 3333;
 
 // app.use(route);
 
-app.listen(port, () => {
+app.listen(Number(port), '0.0.0.0', () => {
 	console.log('Server listening on port', port);
 });
