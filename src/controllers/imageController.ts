@@ -9,7 +9,6 @@ class ImageController {
 	static getUIImages = (req: Request, res: Response) => {
 		Image.find({}, (err: mongoose.CallbackError, items: typeof Image) => {
 			if (err) {
-				console.log(err);
 				res.status(500).send('An error occurred');
 			} else {
 				res.render('imagesPage', { items: items });
@@ -30,7 +29,7 @@ class ImageController {
 		};
 		Image.create(obj, (err, item) => {
 			if (err) {
-				console.log(err);
+				res.send({ message: err.message });
 			} else {
 				// item.save();
 				res.redirect('/image-ui');

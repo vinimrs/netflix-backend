@@ -44,7 +44,7 @@ class Email {
 		});
 
 		if (process.env.NODE_ENV !== 'production') {
-			console.log('URL: ' + nodemailer.getTestMessageUrl(info));
+			'URL: ' + nodemailer.getTestMessageUrl(info);
 		}
 	}
 }

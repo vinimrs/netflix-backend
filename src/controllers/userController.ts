@@ -47,7 +47,11 @@ class UserController {
 			await user.findByIdAndUpdate(usuario?.id, {
 				$set: { verifiedEmail: true },
 			});
-			res.status(200).json({ message: 'E-mail verificado com sucesso!' });
+			res.status(200).send(`
+
+            <h1>E-mail verificado com sucesso!</h1>
+                <p>Agora você já pode fazer seu login!</p>
+            `);
 		} catch (error) {
 			if (error instanceof Error)
 				res.status(500).json({ error: error.message });
@@ -219,16 +223,17 @@ class UserController {
 
 	static updateUserProfile = (req: Request, res: Response) => {
 		const id = req.params.id;
-		const { image, slug, name, preference } = req.body;
+		const { image, slug, name, preference, index } = req.body;
 
 		try {
 			user.findOneAndUpdate(
-				{ _id: id, 'profiles.image': image },
+				{ _id: id },
 				{
 					$set: {
-						'profiles.$.slug': slug,
-						'profiles.$.name': name,
-						'profiles.$.preference': preference,
+						[`profiles.${index}.slug`]: slug,
+						[`profiles.${index}.name`]: name,
+						[`profiles.${index}.preference`]: preference,
+						[`profiles.${index}.image`]: image,
 					},
 				},
 				(error: mongoose.CallbackError) => {

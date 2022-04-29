@@ -90,7 +90,7 @@ export default {
 	) {
 		try {
 			const { refresh_token } = req.body; // Usuário enviará o token no corpo da requisição
-			console.log('bearer', refresh_token);
+			'bearer', refresh_token;
 			const id = await tokens.refresh.verifica(refresh_token);
 			await tokens.refresh.invalida(refresh_token);
 			const user = await Usuario.findById(id);

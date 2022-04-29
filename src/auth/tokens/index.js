@@ -21,7 +21,7 @@ function criaTokenJWT(id, [tempoQuantidade, tempoUnidade]) {
 async function criaTokenOpaco(id, [tempoQuantidade, tempoUnidade], allowlist) {
 	const tokenOpaco = crypto.randomBytes(24).toString('hex');
 	const dataExpiracao = moment().add(tempoQuantidade, tempoUnidade).unix(); // tempo de 5 dias
-	console.log('tokenOpaco', tokenOpaco);
+	'tokenOpaco', tokenOpaco;
 	await allowlist.adiciona(tokenOpaco, id, dataExpiracao); // adicionando na lista
 	return tokenOpaco;
 }
