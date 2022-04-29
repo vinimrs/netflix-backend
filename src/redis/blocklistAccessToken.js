@@ -5,7 +5,7 @@ import { createHash } from 'crypto';
 
 const blocklist = redis.createClient({
 	prefix: 'blocklist-access-token:',
-	url: process.env.REDIS_URL,
+	url: process.env.HEROKU_REDIS_CHARCOAL_URL,
 });
 const manipulaBlockList = manipulaLista(blocklist);
 
