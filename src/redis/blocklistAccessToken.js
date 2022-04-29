@@ -3,7 +3,10 @@ import manipulaLista from './handleList';
 import jwt from 'jsonwebtoken';
 import { createHash } from 'crypto';
 
-const blocklist = redis.createClient({ prefix: 'blocklist-access-token:' });
+const blocklist = redis.createClient({
+	prefix: 'blocklist-access-token:',
+	url: process.env.REDIS_URL,
+});
 const manipulaBlockList = manipulaLista(blocklist);
 
 function geraTokenHash(token) {
