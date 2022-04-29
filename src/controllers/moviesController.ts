@@ -52,8 +52,10 @@ class MoviesController {
 			// const resp = await moviedb.movieTopRated({
 			// 	language: 'pt-BR',
 			// });
+			const conv = await resp.json();
+			console.log(conv);
 
-			res.status(200).send(resp.json());
+			res.status(200).send(conv);
 		} catch (error) {
 			if (error instanceof Error) {
 				res.status(500).send({ error: error });
