@@ -1,12 +1,32 @@
-import redis from 'redis';
+import * as redis from 'redis';
 import manipulaLista from './handleList';
 import jwt from 'jsonwebtoken';
 import { createHash } from 'crypto';
 
-const blocklist = redis.createClient({
-	prefix: 'blocklist-access-token:',
-	url: process.env.HEROKU_REDIS_CHARCOAL_URL,
-});
+let blocklist = null;
+
+(async () => {
+	blocklist = redis.createClient({
+		legacyMode: true,
+		prefix: 'blocklist-access-token:',
+		url: process.env.REDIS_URL,
+	});
+
+	blocklist.on('error', err => console.log('Redis Client Error', err));
+
+	await blocklist.connect();
+})();
+
+// const blocklist = redis.createClient({
+// 	legacyMode: true,
+// 	prefix: 'blocklist-access-token:',
+// 	url: process.env.REDIS_URL,
+// });
+
+// blocklist.on('error', err => console.log('Redis Client Error', err));
+
+// await blocklist.connect();
+
 const manipulaBlockList = manipulaLista(blocklist);
 
 function geraTokenHash(token) {

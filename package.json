@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "dist/server.ts",
 	"scripts": {
-		"build": "babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
+		"build": "npx babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
 		"start": "node dist/server.js -p $PORT",
 		"dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
 		"heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development npm install --only=dev --dev",
@@ -15,6 +15,10 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
+		"@babel/cli": "^7.17.6",
+		"@babel/core": "^7.17.9",
+		"@babel/preset-env": "^7.16.11",
+		"@babel/preset-typescript": "^7.16.7",
 		"bcrypt": "^5.0.1",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",
@@ -28,16 +32,12 @@
 		"multer": "^1.4.4",
 		"nodemailer": "^6.4.8",
 		"nodemon": "^2.0.15",
-		"passport": "^0.4.1",
+		"passport": "^0.6.0",
 		"passport-http-bearer": "^1.0.1",
 		"passport-local": "^1.0.0",
-		"redis": "^3.1.2"
+		"redis": "^4.5.1"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.17.6",
-		"@babel/core": "^7.17.9",
-		"@babel/preset-env": "^7.16.11",
-		"@babel/preset-typescript": "^7.16.7",
 		"@types/bcrypt": "^5.0.0",
 		"@types/cors": "^2.8.12",
 		"@types/express": "^4.17.13",

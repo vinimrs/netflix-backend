@@ -62,9 +62,7 @@ export default {
 			new BStrategy(async (token, done) => {
 				try {
 					const id = await tokens.access.verifica(token);
-					const usuario = await Usuario.findById(id).populate(
-						'profiles.image'
-					);
+					const usuario = await Usuario.findById(id).populate('profiles.image');
 					console.log(usuario);
 					done(null, usuario, token);
 				} catch (erro) {
