@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import express, { Request } from 'express';
+import express from 'express';
 import router from './routes';
 
 import cors from 'cors';
@@ -18,7 +18,9 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', __dirname + '/views');
 
-app.use(cors());
+app.use(cors({ origin: '*' }));
+app.options('*', cors());
+app.options('https://vinflix.vercel.app', cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname));
