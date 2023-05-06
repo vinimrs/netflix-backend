@@ -16,7 +16,6 @@ class MoviesController {
 				language: 'pt-BR',
 				sort_by: 'popularity.desc',
 				with_genres: id,
-				include_adult: true,
 				include_video: true,
 			});
 
