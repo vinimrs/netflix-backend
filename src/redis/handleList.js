@@ -1,28 +1,25 @@
-import { promisify } from 'util';
+const handleList = (redisClient, prefix) => {
+  return {
+    async adiciona(chave, valor, dataExpiracao) {
+      const key = prefix + chave;
+      await redisClient.set(key, valor);
+      redisClient.expireAt(key, dataExpiracao);
+    },
+    async buscaValor(chave) {
+      const key = prefix + chave;
+      return await redisClient.get(key);
+    },
+    async contemChave(chave) {
+      const key = prefix + chave;
+      const resultado = await redisClient.exists(key);
+      return resultado === 1;
+    },
 
-const handleList = lista => {
-	const setAsync = promisify(lista.set).bind(lista);
-	const existsAsync = promisify(lista.exists).bind(lista);
-	const getAsync = promisify(lista.get).bind(lista);
-	const delAsync = promisify(lista.del).bind(lista);
-
-	return {
-		async adiciona(chave, valor, dataExpiracao) {
-			await setAsync(chave, valor);
-			lista.expireat(chave, dataExpiracao);
-		},
-		async buscaValor(chave) {
-			return getAsync(chave);
-		},
-		async contemChave(chave) {
-			const resultado = await existsAsync(chave);
-			return resultado === 1;
-		},
-
-		async deleta(chave) {
-			await delAsync(chave);
-		},
-	};
+    async deleta(chave) {
+      const key = prefix + chave;
+      await redisClient.del(key);
+    },
+  };
 };
 
 export default handleList;

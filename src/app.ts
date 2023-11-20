@@ -11,7 +11,7 @@ import authStrategy from './auth/authStrategies';
 
 db.on('error', console.log.bind(console, 'Erro de conexão'));
 db.once('open', () => {
-	console.log('conexão feita com sucesso');
+  console.log('conexão feita com sucesso');
 });
 
 const app = express();
@@ -20,7 +20,7 @@ app.set('views', __dirname + '/views');
 
 app.use(cors({ origin: '*' }));
 app.options('*', cors());
-app.options('https://vinflix.vercel.app', cors());
+// app.options('https://vinflix.vercel.app', cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname));

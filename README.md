@@ -19,25 +19,23 @@
    </p>
 </p>
 
-
 ## Features :hammer:
 
--   `Autenticação JWT completa`: refresh e access token!
--   `Gerenciamento de Sessão`: provê para as aplicações rotas de consulta de sessão!
--   `Provedor de todos os filmes`: faz o intermédio entre o cliente e a API de filmes!
+- `Autenticação JWT completa`: refresh e access token!
+- `Gerenciamento de Sessão`: provê para as aplicações rotas de consulta de sessão!
+- `Provedor de todos os filmes`: faz o intermédio entre o cliente e a API de filmes!
 
 ## Tecnologias ⚡
 
--   [NodeJs](https://nodejs.org/en/)
--   [Express](https://expressjs.com/pt-br/)
--   [TypeScript](https://www.typescriptlang.org)
--   [Promise-MovieDB](https://www.npmjs.com/package/moviedb-promise)
+- [NodeJs](https://nodejs.org/en/)
+- [Express](https://expressjs.com/pt-br/)
+- [TypeScript](https://www.typescriptlang.org)
+- [Promise-MovieDB](https://www.npmjs.com/package/moviedb-promise)
 
 ## Bancos de dados 💾
 
--   [MongoDbAtlas](https://www.mongodb.com/cloud/atlas/lp/try2)
--   [Redis](https://redis.io)
-
+- [MongoDbAtlas](https://www.mongodb.com/cloud/atlas/lp/try2)
+- [Redis](https://redis.io)
 
 ## Utilização da API :arrow_forward:
 
@@ -45,10 +43,10 @@ Com um simples fetch
 
 ```javascript
 const res = await fetch(`${process.env.BACKEND_URL}/session`, {
-	method: 'GET',
-	headers: {
-		Authorization: `Bearer ${token}`, // Obrigatório
-	},
+  method: 'GET',
+  headers: {
+    Authorization: `Bearer ${token}`, // Obrigatório
+  },
 });
 ```
 
@@ -56,4 +54,4 @@ const res = await fetch(`${process.env.BACKEND_URL}/session`, {
 
 Ideias de melhorias para o projeto:
 
--   Tipagem total
+- Tipagem total
