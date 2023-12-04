@@ -2,7 +2,7 @@ name: Continuous Delivery (Ansible)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["master"]
 
 jobs:
   ansible:
