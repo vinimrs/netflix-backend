@@ -64,6 +64,8 @@ jobs:
         fail_on_empty: false
         sort_keys: false
 
+    - name: test SSH_PRIVATE_KEY
+      run: echo ${{secrets.SSH_PRIVATE_KEY}} > ec2.pem && ssh -i "ec2.pem" ubuntu@ec2-52-88-175-223.us-west-2.compute.amazonaws.com
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
