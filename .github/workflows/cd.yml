@@ -1,8 +1,6 @@
 name: Continuous Delivery
 
 on:
-  pull_request:
-    types: ["*"]
   push:
     branches:
       - master
@@ -46,8 +44,6 @@ jobs:
     steps:
     - name: checkout repo
       uses: actions/checkout@v3
-    - name: ls -la
-      run: cat compose.yaml
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
@@ -75,15 +71,8 @@ jobs:
         directory: ./
         key: ${{secrets.SSH_PRIVATE_KEY}}
         # # Optional, literal inventory file contents
-        # inventory: |
-        #   [all]
-        #   example.com
-
-        #   [group1]
-        #   example.com
-        # Optional, SSH known hosts file content
-        known_hosts: |
+        inventory: |
+          [netflix-backend]
           52.88.175.223
-        # Optional, additional flags to pass to ansible-playbook
         options: |
           --verbose
