@@ -38,13 +38,13 @@ jobs:
         AWS_SECRET_ACCESS_KEY:  ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
   ansible:
- 
+    needs: terraform
     runs-on: ubuntu-latest
  
     steps:
     - name: checkout repo
       uses: actions/checkout@v3
-      
+
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
@@ -78,6 +78,6 @@ jobs:
         # # Optional, literal inventory file contents
         inventory: |
           [netflix-backend]
-          52.88.175.223 ansible_user=ubuntu 
+          ${{secrets.SSH_HOST}} ansible_user=ubuntu 
         options: |
           --verbose

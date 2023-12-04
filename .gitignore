@@ -1,6 +1,9 @@
 # private key
 *.pem
 
+# Host
+hosts.yml
+
 ### Ansible ###
 *.retry
 
