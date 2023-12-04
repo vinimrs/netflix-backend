@@ -45,7 +45,6 @@ jobs:
       uses: actions/checkout@v3
     - name: ls -la
       run: cat compose.yaml
-      working-directory: ${{ github.workspace }}/tmp
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
