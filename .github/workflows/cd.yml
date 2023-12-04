@@ -73,6 +73,6 @@ jobs:
         # # Optional, literal inventory file contents
         inventory: |
           [netflix-backend]
-          52.88.175.223
+          52.88.175.223 ansible_user=ubuntu 
         options: |
           --verbose
