@@ -7,7 +7,6 @@ on:
 
 jobs:
   ansible:
-    needs: terraform
     runs-on: ubuntu-latest
  
     steps:
