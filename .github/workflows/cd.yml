@@ -10,7 +10,7 @@ on:
 jobs:
 
   terraform:
-    name: Deploy
+
     runs-on: ubuntu-latest
     steps:
 
@@ -41,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
  
     steps:
+    - name: ls
+      run: ls -la
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
@@ -64,7 +66,7 @@ jobs:
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-        playbook: playbook.yml
+        playbook: ./playbook.yml
         directory: ./
         key: ${{secrets.SSH_PRIVATE_KEY}}
         # # Optional, literal inventory file contents
