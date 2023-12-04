@@ -5,3 +5,6 @@ dist
 **/.svn
 **/.hg
 **/node_modules
+
+**/*.yml
+**/*.yaml
