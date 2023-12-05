@@ -7,7 +7,27 @@ on:
 
 jobs:
 
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run installation
+        run: npm i
+      - name: Run linter
+        run: npm run lint:fix
+        
+  formatter:
+    needs: linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run installation
+        run: npm i
+      - name: Run formatter
+        run: npm run prettier
+
   docker:
+    needs: formatter
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3

@@ -1,70 +1,114 @@
 - hosts: netflix-backend
   tasks:
-    - name: install dependencies
+    - name: Install GPG
       become: true
+      tags: nodejs, install, setup
       apt:
-        name:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - gnupg-agent
-          - software-properties-common
-          - git-all
-        state: latest
+        name: gnupg
         update_cache: yes
-    - name: GPG key
+        state: present
+
+    - name: Install the gpg key for nodejs LTS
       become: true
       apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
         state: present
-    - name: repository docker
+
+    - name: Install the nodejs LTS repos
       become: true
       apt_repository:
-        repo: deb https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        repo: "deb https://deb.nodesource.com/node_18.x focal main"
         state: present
-    - name: install docker
-      become: true
-      apt:
-        name:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-        state: latest
         update_cache: yes
-    - name: adding users to group docker
+
+    - name: Install NodeJS
       become: true
-      user:
-        name: '{{ item }}'
-        groups: docker
-        append: yes
-      loop:
-        - ubuntu
-    - name: Install docker-compose
-      become: true
-      get_url:
-        url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-        dest: /usr/local/bin/docker-compose
-        mode: '755'
-    - name: Removing previous folder
-      shell: 'rm -rf /home/ubuntu/netflix-backend'
-    - name: Clone a github repository
-      git:
-        repo: https://github.com/vinimrs/netflix-backend.git
-        dest: /home/ubuntu/netflix-backend
-        clone: yes
-        update: yes
-    # - name: Criando pasta
-    #   shell: 'mkdir /home/ubuntu/netflix-backend'
-    #   ignore_errors: yes
-    # - name: Copying compose file
-    #   copy:
-    #     src: ./compose.yaml
-    #     dest: /home/ubuntu/netflix-backend/
+      tags: nodesjs, install
+      apt:
+        name: nodejs
+        state: latest
+
+    - name: Build app locally
+      tags: app, build, deploy
+      shell: npm run build
+      args:
+        chdir: ./
+      delegate_to: 127.0.0.1
+    
+    - name: Creating project folder
+      shell: 'rm -rf /home/ubuntu/netflix-backend && mkdir /home/ubuntu/netflix-backend'
+
+    - name: Copy build to server
+      tags: app, build, deploy
+      copy:
+        src: ./dist
+        dest: /home/ubuntu/netflix-backend/
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+
+    - name: Copy package-lock.json to server
+      tags: app, build, deploy
+      copy:
+        src: ./package-lock.json
+        dest: /home/ubuntu/netflix-backend/package-lock.json
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+
+    - name: Copy package.json to server
+      tags: app, build, deploy
+      copy:
+        src: ./package.json
+        dest: /home/ubuntu/netflix-backend/package.json
+        owner: ubuntu
+        group: ubuntu
+        mode: 0644
+
     - name: Copying env file
       copy:
         src: ./.env
         dest: /home/ubuntu/netflix-backend/
-    - name: Initializing the project
-      shell: 'cd /home/ubuntu/netflix-backend && sudo service docker start && sudo docker-compose up -d'
-      ignore_errors: yes
+        
+    - name: Create service file
+      become: true
+      tags: app, build, deploy
+      template:
+        src: ./service
+        dest: /etc/systemd/system/nodejs.service
+      register: service_conf
+
+    - name: Reload systemd daemon
+      become: true
+      tags: app, build, deploy, systemd
+      systemd:
+        daemon_reload: yes
+      when: service_conf.changed
+
+    - name: Install dependencies from lockfile
+      tags: app, build, deploy
+      shell: npm ci
+      args:
+        chdir: /home/ubuntu/netflix-backend/
+
+    - name: Start NodeJS service
+      become: true
+      tags: app, build, deploy
+      service:
+        name: nodejs
+        state: started
+        enabled: yes
+
+    # - name: Removing previous folder
+    #   shell: 'rm -rf /home/ubuntu/netflix-backend'
+    # - name: Clone a github repository
+    #   git:
+    #     repo: https://github.com/vinimrs/netflix-backend.git
+    #     dest: /home/ubuntu/netflix-backend
+    #     clone: yes
+    #     update: yes
+
+    # - name: Initializing the project
+    #   shell: 'cd /home/ubuntu/netflix-backend && sudo service docker start && sudo docker-compose up -d'
+    #   ignore_errors: yes
 
