@@ -61,6 +61,9 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
+    - name: Install babel/cli
+      run: npm install --global @babel/cli
+      
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
