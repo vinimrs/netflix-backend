@@ -34,7 +34,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install babel/cli
-      run: npm i --global @babel/cli && npm i --global @babel/core && npm i --global @babel/preset-env
+      run: npm install -g @babel/cli@7.17.6 && npm install -g @babel/core@7.17.9 && npm install -g @babel/preset-env@7.16.11
       
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
