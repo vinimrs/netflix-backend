@@ -33,6 +33,9 @@ jobs:
     - name: checkout repo
       uses: actions/checkout@v3
 
+    - name: Install babel/cli
+      run: npm install --global @babel/cli
+      
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v2.0
       with:
