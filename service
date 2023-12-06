@@ -2,7 +2,7 @@
 Description=nodejs server
 
 [Service]
-ExecStart=/usr/bin/node /home/ubuntu/netflix-backend/dist/app.js
+ExecStart=/usr/bin/node /home/ubuntu/netflix-backend/dist/server.js
 Restart=on-failure
 # Output to syslog
 StandardOutput=syslog

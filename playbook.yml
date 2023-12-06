@@ -69,21 +69,10 @@
       copy:
         src: ./.env
         dest: /home/ubuntu/netflix-backend/
-        
-    - name: Create service file
+    
+    - name: Installing PM2
       become: true
-      tags: app, build, deploy
-      template:
-        src: ./service
-        dest: /etc/systemd/system/nodejs.service
-      register: service_conf
-
-    - name: Reload systemd daemon
-      become: true
-      tags: app, build, deploy, systemd
-      systemd:
-        daemon_reload: yes
-      when: service_conf.changed
+      shell: npm install pm2@latest -g
 
     - name: Install dependencies from lockfile
       tags: app, build, deploy
@@ -91,24 +80,13 @@
       args:
         chdir: /home/ubuntu/netflix-backend/
 
-    - name: Start NodeJS service
-      become: true
-      tags: app, build, deploy
-      service:
-        name: nodejs
-        state: started
-        enabled: yes
+    - name: Initializing the app
+      shell: pm2 start /home/ubuntu/netflix-backend/dist/server.js -f
 
-    # - name: Removing previous folder
-    #   shell: 'rm -rf /home/ubuntu/netflix-backend'
-    # - name: Clone a github repository
-    #   git:
-    #     repo: https://github.com/vinimrs/netflix-backend.git
-    #     dest: /home/ubuntu/netflix-backend
-    #     clone: yes
-    #     update: yes
+    - name: Setup startup script
+      shell: pm2 startup
+      ignore_errors: True
 
-    # - name: Initializing the project
-    #   shell: 'cd /home/ubuntu/netflix-backend && sudo service docker start && sudo docker-compose up -d'
-    #   ignore_errors: yes
-
+    - name: Save startup script
+      shell: pm2 save
+      ignore_errors: True
