@@ -14,6 +14,14 @@ data "aws_eip" "my_instance_eip" {
   public_ip = "52.88.175.223"
 }
 
+data "aws_security_group" "web" {
+  id ="sg-07f86986595acfaee"
+}
+
+data "aws_security_group" "ssh" {
+  id ="sg-093f93e0c3ae95d15"
+}
+
 
 provider "aws" {
   region  = "us-west-2"
@@ -25,19 +33,11 @@ resource "aws_eip_association" "eip_assoc" {
   allocation_id = data.aws_eip.my_instance_eip.id
 }
 
-data "aws_security_group" "web" {
-  id ="sg-07f86986595acfaee"
-}
-
-data "aws_security_group" "ssh" {
-  id ="sg-093f93e0c3ae95d15"
-}
-
 resource "aws_instance" "app_server" {
   ami           = "ami-0efcece6bed30fd98"
   instance_type = "t2.micro"
   key_name = "ec2"
-  security_groups = [aws_security_group.ssh.id, aws_security_group.web.id]
+  security_groups = [data.aws_security_group.ssh.id, data.aws_security_group.web.id]
   user_data = file("userdata.tpl")
 
   tags = {
