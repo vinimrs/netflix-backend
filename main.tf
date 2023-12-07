@@ -22,11 +22,9 @@ data "aws_security_group" "ssh" {
   id ="sg-093f93e0c3ae95d15"
 }
 
-
 provider "aws" {
   region  = "us-west-2"
 }
-
 
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.app_server.id
@@ -37,8 +35,7 @@ resource "aws_instance" "app_server" {
   ami           = "ami-0efcece6bed30fd98"
   instance_type = "t2.micro"
   key_name = "ec2"
-  security_groups = [data.aws_security_group.ssh.id, data.aws_security_group.web.id]
-  user_data = file("userdata.tpl")
+  vpc_security_group_ids = [data.aws_security_group.ssh.id, data.aws_security_group.web.id]
 
   tags = {
     Name = "neflix backend terraform ansible"

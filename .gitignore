@@ -2,7 +2,7 @@
 *.pem
 
 # Host
-hosts.yml
+ansible/hosts.yml
 
 ### Ansible ###
 *.retry

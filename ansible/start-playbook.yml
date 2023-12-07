@@ -108,8 +108,10 @@
     - name: Stopping apache2
       become: true
       shell: service apache2 stop
+      ignore_errors: true
     
     - name: Inserting location config
+      become: true
       blockinfile:
         dest: /etc/nginx/sites-available/default
         block: |
@@ -120,23 +122,26 @@
           proxy_set_header Host $host;
           proxy_cache_bypass $http_upgrade;
         backup: yes
-        insertafter: location / {
+        insertafter: '^\s*location \/ {$'
     
     - name: Inserting server_name config 
+      become: true
       lineinfile:
         dest: /etc/nginx/sites-available/default
         line: server_name localhost vinimrs.dev netbackend.vinimrs.dev;
         insertafter: server_name _;
     
     - name: Removing previous nginx location config
+      become: true
       lineinfile:
-          line: try_files
+          regexp: '^\s*try_files \$uri \$uri\/ =404;$'
           path: /etc/nginx/sites-available/default
           state: absent
 
     - name: Removing previous nginx server_name config
+      become: true
       lineinfile:
-          line: server_name _;
+          regexp: '^\s*server_name _;$'
           path: /etc/nginx/sites-available/default
           state: absent
     
@@ -175,3 +180,4 @@
     - name: Verifying Certbot auto-renewal
       become: true
       shell: systemctl status snap.certbot.renew.service
+      ignore_errors: true

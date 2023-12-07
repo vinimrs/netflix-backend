@@ -67,7 +67,7 @@ jobs:
     - name: Run playbook
       uses: dawidd6/action-ansible-playbook@v2
       with:
-        playbook: continuous-playbook.yml
+        playbook: ./ansible/continuous-playbook.yml
         directory: ./
         key: ${{secrets.SSH_PRIVATE_KEY}}
         # # Optional, literal inventory file contents
