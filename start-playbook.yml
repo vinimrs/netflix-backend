@@ -1,0 +1,177 @@
+- hosts: netflix-backend
+  tasks:
+
+    - name: Update and upgrade apt packages
+      become: true
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400 #One day
+
+    # - name: Install GPG
+    #   become: true
+    #   tags: nodejs, install, setup
+    #   apt:
+    #     name: gnupg
+    #     update_cache: yes
+    #     state: present
+
+    # - name: Install the gpg key for nodejs LTS
+    #   become: true
+    #   apt_key:
+    #     url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+    #     state: present
+
+    # - name: Install the nodejs LTS repos
+    #   become: true
+    #   apt_repository:
+    #     repo: "deb https://deb.nodesource.com/node_18.x focal main"
+    #     state: present
+    #     update_cache: yes
+
+    # - name: Install NodeJS
+    #   become: true
+    #   tags: nodesjs, install
+    #   apt:
+    #     name: nodejs
+    #     state: latest
+    
+    # - name: Installing PM2
+    #   become: true
+    #   shell: npm install pm2@latest -g
+
+    # - name: Build app locally
+    #   tags: app, build, deploy
+    #   shell: npm run build
+    #   args:
+    #     chdir: ./
+    #   delegate_to: 127.0.0.1
+    
+    # - name: Creating project folder
+    #   shell: 'rm -rf /home/ubuntu/netflix-backend && mkdir /home/ubuntu/netflix-backend'
+
+    # - name: Copy build to server
+    #   tags: app, build, deploy
+    #   copy:
+    #     src: ./dist
+    #     dest: /home/ubuntu/netflix-backend/
+    #     owner: ubuntu
+    #     group: ubuntu
+    #     mode: 0644
+
+    # - name: Copy package-lock.json to server
+    #   tags: app, build, deploy
+    #   copy:
+    #     src: ./package-lock.json
+    #     dest: /home/ubuntu/netflix-backend/package-lock.json
+    #     owner: ubuntu
+    #     group: ubuntu
+    #     mode: 0644
+
+    # - name: Copy package.json to server
+    #   tags: app, build, deploy
+    #   copy:
+    #     src: ./package.json
+    #     dest: /home/ubuntu/netflix-backend/package.json
+    #     owner: ubuntu
+    #     group: ubuntu
+    #     mode: 0644
+
+    # - name: Copying env file
+    #   copy:
+    #     src: ./.env
+    #     dest: /home/ubuntu/netflix-backend/
+
+    # - name: Install dependencies from lockfile
+    #   tags: app, build, deploy
+    #   shell: npm ci
+    #   args:
+    #     chdir: /home/ubuntu/netflix-backend/
+
+    # - name: Initializing the app
+    #   shell: pm2 start /home/ubuntu/netflix-backend/dist/server.js
+
+    # - name: Setup startup script
+    #   shell: pm2 startup
+    #   ignore_errors: True
+
+    # - name: Save startup script
+    #   shell: pm2 save
+    #   ignore_errors: True
+    
+    - name: Installing Nginx
+      become: true
+      tags: nginx, install
+      apt:
+        name: nginx
+
+    - name: Stopping apache2
+      become: true
+      shell: service apache2 stop
+    
+    - name: Inserting location config
+      blockinfile:
+        dest: /etc/nginx/sites-available/default
+        block: |
+          proxy_pass http://localhost:3333;
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection 'upgrade';
+          proxy_set_header Host $host;
+          proxy_cache_bypass $http_upgrade;
+        backup: yes
+        insertafter: location / {
+    
+    - name: Inserting server_name config 
+      lineinfile:
+        dest: /etc/nginx/sites-available/default
+        line: server_name localhost vinimrs.dev netbackend.vinimrs.dev;
+        insertafter: server_name _;
+    
+    - name: Removing previous nginx location config
+      lineinfile:
+          line: try_files
+          path: /etc/nginx/sites-available/default
+          state: absent
+
+    - name: Removing previous nginx server_name config
+      lineinfile:
+          line: server_name _;
+          path: /etc/nginx/sites-available/default
+          state: absent
+    
+    - name: Check nginx config
+      become: true
+      shell: nginx -t
+
+    - name: Restart nginx
+      become: true
+      shell: service nginx restart
+
+    - name: Installing core
+      become: true
+      shell: snap install core && snap refresh core
+    
+    - name: Removing Certbot
+      become: true
+      shell: apt remove certbot
+
+    - name: Installing Certbot
+      become: true
+      shell: snap install --classic certbot
+    
+    - name: Updating the certbot link
+      become: true
+      shell: ln -s /snap/bin/certbot /usr/bin/certbot
+
+    - name: Confirming Nginx’s Configuration
+      become: true
+      shell: systemctl reload nginx
+
+    - name: Obtaining an free ssl certificate
+      become: true
+      shell: certbot --nginx -d netbackend.vinimrs.dev --non-interactive --agree-tos -m viniromualdo082@gmail.com
+
+    - name: Verifying Certbot auto-renewal
+      become: true
+      shell: systemctl status snap.certbot.renew.service

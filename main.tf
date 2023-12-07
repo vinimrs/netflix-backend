@@ -25,46 +25,22 @@ resource "aws_eip_association" "eip_assoc" {
   allocation_id = data.aws_eip.my_instance_eip.id
 }
 
+data "aws_security_group" "web" {
+  id ="sg-07f86986595acfaee"
+}
+
+data "aws_security_group" "ssh" {
+  id ="sg-093f93e0c3ae95d15"
+}
+
 resource "aws_instance" "app_server" {
   ami           = "ami-0efcece6bed30fd98"
   instance_type = "t2.micro"
   key_name = "ec2"
-  # user_data = <<-EOF
-  #               #!/bin/bash
-  #               cd /home/ubuntu
-  #               echo "<h1>Mensagem a ser mostrada</h1>" > index.html
-  #               nohup busybox httpd -f -p 8080 &
-  #               EOF
-
+  security_groups = [aws_security_group.ssh.id, aws_security_group.web.id]
+  user_data = file("userdata.tpl")
 
   tags = {
     Name = "neflix backend terraform ansible"
   }
 }
-
-
-
-# resource "aws_s3_bucket" "s3Bucket" {
-#      bucket = "terraform-netflix-backend"
-#      acl       = "public-read"
-
-#      policy  = {
-     
-#       "id" : "MakePublic",
-#       "version" : "2012-10-17",
-#       "statement" : [
-#         {
-#           "action" : [
-#               "s3:GetObject"
-#             ],
-#           "effect" : "Allow",
-#           "resource" : "arn:aws:s3:::terraform-netflix-backend/*",
-#           "principal" : "*"
-#         }
-#       ]
-#     }
-
-#     # website {
-#     #     index_document = "index.html"
-#     # }
-# }

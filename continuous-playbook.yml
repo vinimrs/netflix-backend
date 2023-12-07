@@ -1,33 +1,5 @@
 - hosts: netflix-backend
   tasks:
-    - name: Install GPG
-      become: true
-      tags: nodejs, install, setup
-      apt:
-        name: gnupg
-        update_cache: yes
-        state: present
-
-    - name: Install the gpg key for nodejs LTS
-      become: true
-      apt_key:
-        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
-        state: present
-
-    - name: Install the nodejs LTS repos
-      become: true
-      apt_repository:
-        repo: "deb https://deb.nodesource.com/node_18.x focal main"
-        state: present
-        update_cache: yes
-
-    - name: Install NodeJS
-      become: true
-      tags: nodesjs, install
-      apt:
-        name: nodejs
-        state: latest
-
     - name: Build app locally
       tags: app, build, deploy
       shell: npm run build
@@ -69,10 +41,6 @@
       copy:
         src: ./.env
         dest: /home/ubuntu/netflix-backend/
-    
-    - name: Installing PM2
-      become: true
-      shell: npm install pm2@latest -g
 
     - name: Install dependencies from lockfile
       tags: app, build, deploy
@@ -80,18 +48,5 @@
       args:
         chdir: /home/ubuntu/netflix-backend/
 
-    - name: Initializing the app
-      block:
-        - name: Init
-          command: pm2 start /home/ubuntu/netflix-backend/dist/server.js
-      rescue:
-        - name: Restart only
-          command: pm2 restart 0
-
-    - name: Setup startup script
-      shell: pm2 startup
-      ignore_errors: True
-
-    - name: Save startup script
-      shell: pm2 save
-      ignore_errors: True
+    - name: Restarting the app 
+      shell: pm2 restart 0
