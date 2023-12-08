@@ -22,6 +22,7 @@ data "aws_security_group" "ssh" {
   id ="sg-093f93e0c3ae95d15"
 }
 
+# Definindo o provedor
 provider "aws" {
   region  = "us-west-2"
 }
