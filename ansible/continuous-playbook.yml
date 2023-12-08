@@ -4,7 +4,7 @@
       tags: app, build, deploy
       shell: npm run build
       args:
-        chdir: ./
+        chdir: ../
       delegate_to: 127.0.0.1
     
     - name: Creating project folder
@@ -13,7 +13,7 @@
     - name: Copy build to server
       tags: app, build, deploy
       copy:
-        src: ./dist
+        src: ../dist
         dest: /home/ubuntu/netflix-backend/
         owner: ubuntu
         group: ubuntu
@@ -22,7 +22,7 @@
     - name: Copy package-lock.json to server
       tags: app, build, deploy
       copy:
-        src: ./package-lock.json
+        src: ../package-lock.json
         dest: /home/ubuntu/netflix-backend/package-lock.json
         owner: ubuntu
         group: ubuntu
@@ -31,7 +31,7 @@
     - name: Copy package.json to server
       tags: app, build, deploy
       copy:
-        src: ./package.json
+        src: ../package.json
         dest: /home/ubuntu/netflix-backend/package.json
         owner: ubuntu
         group: ubuntu
@@ -39,7 +39,7 @@
 
     - name: Copying env file
       copy:
-        src: ./.env
+        src: ../.env
         dest: /home/ubuntu/netflix-backend/
 
     - name: Install dependencies from lockfile
