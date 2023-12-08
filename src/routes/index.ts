@@ -7,7 +7,7 @@ import moviesRoutes from './moviesRoutes';
 
 const routes = (app: Application) => {
   app.route('/').get((req, res) => {
-    res.status(200).send({ titulo: 'Backend Netflix-Clone DevOps' });
+    res.status(200).send({ titulo: 'Backend Netflix-Clone Cloud & DevOps' });
   });
 
   app.use(express.json(), imageRoutes, profileRoutes, userRoutes, moviesRoutes);

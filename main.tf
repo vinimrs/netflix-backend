@@ -31,6 +31,7 @@ resource "aws_eip_association" "eip_assoc" {
   allocation_id = data.aws_eip.my_instance_eip.id
 }
 
+# Criando instância
 resource "aws_instance" "app_server" {
   ami           = "ami-0efcece6bed30fd98"
   instance_type = "t2.micro"
