@@ -71,7 +71,7 @@
         dest: /home/ubuntu/netflix-backend/
         owner: ubuntu
         group: ubuntu
-        mode: 0755
+        mode: 0644
 
     - name: Install dependencies from lockfile
       tags: app, build, deploy
