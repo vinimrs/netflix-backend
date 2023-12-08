@@ -63,7 +63,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Sleeping waiting the instance initialization
-      run: sleep 180  
+      run: sleep 70 
 
     - name: Run installation
       run: npm i

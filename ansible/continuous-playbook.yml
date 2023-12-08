@@ -1,13 +1,40 @@
 - hosts: netflix-backend
   tasks:
+    - name: Install GPG
+      become: true
+      tags: nodejs, install, setup
+      apt:
+        name: gnupg
+        update_cache: yes
+        state: present
 
+    - name: Install the gpg key for nodejs LTS
+      become: true
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      become: true
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_18.x focal main"
+        state: present
+        update_cache: yes
+
+    - name: Install NodeJS
+      become: true
+      tags: nodesjs, install
+      apt:
+        name: nodejs
+        state: latest
+        
     - name: Build app locally
       tags: app, build, deploy
       shell: npm run build
       args:
         chdir: ../
       delegate_to: 127.0.0.1
-    
+
     - name: Creating project folder
       shell: 'rm -rf /home/ubuntu/netflix-backend && mkdir /home/ubuntu/netflix-backend'
 
