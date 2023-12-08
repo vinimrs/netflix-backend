@@ -69,6 +69,8 @@
       copy:
         src: ../.env
         dest: /home/ubuntu/netflix-backend/
+        owner: ubuntu
+        group: ubuntu
         mode: 0755
 
     - name: Install dependencies from lockfile
