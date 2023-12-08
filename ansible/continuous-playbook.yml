@@ -51,7 +51,7 @@
       tags: app, build, deploy
       copy:
         src: ../package-lock.json
-        dest: /home/ubuntu/netflix-backend/package-lock.json
+        dest: /home/ubuntu/netflix-backend/
         owner: ubuntu
         group: ubuntu
         mode: 0644
@@ -60,7 +60,7 @@
       tags: app, build, deploy
       copy:
         src: ../package.json
-        dest: /home/ubuntu/netflix-backend/package.json
+        dest: /home/ubuntu/netflix-backend/
         owner: ubuntu
         group: ubuntu
         mode: 0644
@@ -69,6 +69,7 @@
       copy:
         src: ../.env
         dest: /home/ubuntu/netflix-backend/
+        mode: 0755
 
     - name: Install dependencies from lockfile
       tags: app, build, deploy
