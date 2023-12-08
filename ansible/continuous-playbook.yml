@@ -1,4 +1,4 @@
-- hosts: netflix-backend
+- hosts: netflix_backend
   tasks:
     - name: Install GPG
       become: true

@@ -104,7 +104,7 @@ jobs:
         key: ${{secrets.SSH_PRIVATE_KEY}}
         # # Optional, literal inventory file contents
         inventory: |
-          [netflix-backend]
+          [netflix_backend]
           ${{secrets.SSH_HOST}} ansible_user=ubuntu 
         options: |
           --verbose
