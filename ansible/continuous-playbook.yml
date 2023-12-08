@@ -27,7 +27,7 @@
       apt:
         name: nodejs
         state: latest
-        
+
     - name: Build app locally
       tags: app, build, deploy
       shell: npm run build
@@ -76,5 +76,21 @@
       args:
         chdir: /home/ubuntu/netflix-backend/
 
-    - name: Restarting the app 
-      shell: pm2 restart 0
+    - name: Installing PM2
+      become: true
+      shell: npm install pm2@latest -g
+
+    - name: Initializing the app
+      block:
+        - name: Init
+          command: pm2 start /home/ubuntu/netflix-backend/dist/server.js
+      rescue:
+        - name: Restart only
+          command: pm2 restart 0
+
+    - name: Setup startup script
+      shell: pm2 startup
+      ignore_errors: True
+
+    - name: Save startup script
+      shell: pm2 save

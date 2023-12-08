@@ -18,6 +18,7 @@ data "aws_security_group" "web" {
   id ="sg-07f86986595acfaee"
 }
 
+# Definindo o id do grupo de segurança ssh
 data "aws_security_group" "ssh" {
   id ="sg-093f93e0c3ae95d15"
 }
