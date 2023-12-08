@@ -1,5 +1,6 @@
 - hosts: netflix-backend
   tasks:
+
     - name: Build app locally
       tags: app, build, deploy
       shell: npm run build

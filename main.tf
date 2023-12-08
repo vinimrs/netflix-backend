@@ -26,6 +26,7 @@ provider "aws" {
   region  = "us-west-2"
 }
 
+# Associando o Elastic IP
 resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.app_server.id
   allocation_id = data.aws_eip.my_instance_eip.id

@@ -8,12 +8,44 @@
         update_cache: yes
         cache_valid_time: 86400 #One day
 
+    - name: Install GPG
+      become: true
+      tags: nodejs, install, setup
+      apt:
+        name: gnupg
+        update_cache: yes
+        state: present
+
+    - name: Install the gpg key for nodejs LTS
+      become: true
+      apt_key:
+        url: "https://deb.nodesource.com/gpgkey/nodesource.gpg.key"
+        state: present
+
+    - name: Install the nodejs LTS repos
+      become: true
+      apt_repository:
+        repo: "deb https://deb.nodesource.com/node_18.x focal main"
+        state: present
+        update_cache: yes
+
+    - name: Install NodeJS
+      become: true
+      tags: nodesjs, install
+      apt:
+        name: nodejs
+        state: latest
+
     - name: Installing Nginx
       become: true
       tags: nginx, install
       apt:
         name: nginx
 
+    - name: Installing PM2
+      become: true
+      shell: npm install pm2@latest -g
+      
     - name: Stopping apache2
       become: true
       shell: service apache2 stop
