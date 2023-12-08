@@ -86,7 +86,9 @@
     - name: Initializing the app
       block:
         - name: Init
-          command: pm2 start /home/ubuntu/netflix-backend/dist/server.js
+          shell: pm2 start ./dist/server.js
+          args:
+            chdir: /home/ubuntu/netflix-backend/
       rescue:
         - name: Restart only
           command: pm2 restart 0
