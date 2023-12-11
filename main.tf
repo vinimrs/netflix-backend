@@ -14,6 +14,7 @@ data "aws_eip" "my_instance_eip" {
   public_ip = "52.88.175.223"
 }
 
+# Definindo o id do grupo de segurança web
 data "aws_security_group" "web" {
   id ="sg-07f86986595acfaee"
 }
