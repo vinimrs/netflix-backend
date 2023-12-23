@@ -40,6 +40,7 @@ jobs:
       uses: SpicyPizza/create-envfile@v2.0
       with:
         envkey_CHAVE_JWT: ${{ secrets.CHAVE_JWT }}
+        envkey_BASE_URL: ${{ secrets.BASE_URL }}
         envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
         envkey_EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
         envkey_EMAIL_USUARIO: ${{ secrets.EMAIL_USUARIO }}
