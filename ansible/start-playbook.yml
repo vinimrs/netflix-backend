@@ -69,7 +69,7 @@
       become: true
       lineinfile:
         dest: /etc/nginx/sites-available/default
-        line: server_name localhost vinimrs.dev netbackend.vinimrs.dev;
+        line: server_name vinimrs.dev netbackend.vinimrs.dev;
         insertafter: server_name _;
     
     - name: Removing previous nginx location config

@@ -54,59 +54,60 @@ jobs:
       - name: Run formatter
         run: npm run prettier
       
-  ansible:
-    needs: formatter
-    runs-on: ubuntu-latest
+  # ansible:
+  #   needs: formatter
+  #   runs-on: ubuntu-latest
 
-    steps:
-    - name: checkout repo
-      uses: actions/checkout@v3
+  #   steps:
+  #   - name: checkout repo
+  #     uses: actions/checkout@v3
 
-    - name: Sleeping waiting the instance initialization
-      run: sleep 70 
+  #   - name: Sleeping waiting the instance initialization
+  #     run: sleep 70 
 
-    - name: Run installation
-      run: npm i
+  #   - name: Run installation
+  #     run: npm i
       
-    - name: Make envfile
-      uses: SpicyPizza/create-envfile@v2.0
-      with:
-        envkey_CHAVE_JWT: ${{ secrets.CHAVE_JWT }}
-        envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
-        envkey_EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
-        envkey_EMAIL_USUARIO: ${{ secrets.EMAIL_USUARIO }}
-        envkey_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
-        envkey_MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
-        envkey_MOVIEDB_BASE_URL: ${{ secrets.MOVIEDB_BASE_URL }}
-        envkey_NODE_ENV: ${{ secrets.NODE_ENV }}
-        envkey_PORT: ${{ secrets.PORT }}
-        envkey_REDIS_HOST: ${{ secrets.REDIS_HOST }}
-        envkey_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
-        envkey_REDIS_PORT: ${{ secrets.REDIS_PORT }}
-        directory: ./
-        file_name: .env
-        fail_on_empty: false
-        sort_keys: false
+  #   - name: Make envfile
+  #     uses: SpicyPizza/create-envfile@v2.0
+  #     with:
+  #       envkey_CHAVE_JWT: ${{ secrets.CHAVE_JWT }}
+  #       envkey_BASE_URL: ${{ secrets.BASE_URL }}
+  #       envkey_EMAIL_HOST: ${{ secrets.EMAIL_HOST }}
+  #       envkey_EMAIL_SENHA: ${{ secrets.EMAIL_SENHA }}
+  #       envkey_EMAIL_USUARIO: ${{ secrets.EMAIL_USUARIO }}
+  #       envkey_MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
+  #       envkey_MOVIEDB_API_KEY: ${{ secrets.MOVIEDB_API_KEY }}
+  #       envkey_MOVIEDB_BASE_URL: ${{ secrets.MOVIEDB_BASE_URL }}
+  #       envkey_NODE_ENV: ${{ secrets.NODE_ENV }}
+  #       envkey_PORT: ${{ secrets.PORT }}
+  #       envkey_REDIS_HOST: ${{ secrets.REDIS_HOST }}
+  #       envkey_REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+  #       envkey_REDIS_PORT: ${{ secrets.REDIS_PORT }}
+  #       directory: ./
+  #       file_name: .env
+  #       fail_on_empty: false
+  #       sort_keys: false
 
-    # - name: Sleeping waiting instance is completed deployed
-    #   run: sleep 180
+  #   # - name: Sleeping waiting instance is completed deployed
+  #   #   run: sleep 180
 
-    - name: Setting ssh key
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
+  #   - name: Setting ssh key
+  #     uses: webfactory/ssh-agent@v0.7.0
+  #     with:
+  #       ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }} 
 
-    - name: Run playbook
-      uses: dawidd6/action-ansible-playbook@v2
-      with:
-        playbook: ./ansible/start-playbook.yml
-        directory: ./
-        key: ${{secrets.SSH_PRIVATE_KEY}}
-        # # Optional, literal inventory file contents
-        inventory: |
-          [netflix_backend]
-          ${{secrets.SSH_HOST}} ansible_user=ubuntu 
-        options: |
-          --verbose
+  #   - name: Run playbook
+  #     uses: dawidd6/action-ansible-playbook@v2
+  #     with:
+  #       playbook: ./ansible/start-playbook.yml
+  #       directory: ./
+  #       key: ${{secrets.SSH_PRIVATE_KEY}}
+  #       # # Optional, literal inventory file contents
+  #       inventory: |
+  #         [netflix_backend]
+  #         ${{secrets.SSH_HOST}} ansible_user=ubuntu 
+  #       options: |
+  #         --verbose
 
   

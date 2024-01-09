@@ -47,4 +47,7 @@ jobs:
         context: .
         file: ./Dockerfile
         push: true
-        tags: vinimrs/netflix-backend:${{github.ref_name}}
+        tags: vinimrs/netflix-backend:latest
+    - name: Update from portainer webhook
+      run: |-
+        curl -X POST ${{ secrets.PORTAINER_WEBHOOK_URL }}
