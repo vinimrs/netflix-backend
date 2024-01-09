@@ -11,7 +11,7 @@ terraform {
 }
 
 data "aws_eip" "my_instance_eip" {
-  public_ip = "52.88.175.223"
+  public_ip = "35.167.42.55"
 }
 
 # Definindo o id do grupo de segurança web
